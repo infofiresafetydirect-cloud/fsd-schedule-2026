@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>FSD Schedule 2026</title>
+  <style>
+    :root {
+      --fsd-red:#c8102e;
+      --fsd-dark:#111827;
+      --fsd-soft:#f3f4f6;
+      --fsd-card:#ffffff;
+      --fsd-green:#0f8a4b;
+      --fsd-blue:#1d4ed8;
+      --shadow:0 18px 45px rgba(15,23,42,.16);
+      --radius:24px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f8fafc;color:#111827}
+    body{overscroll-behavior-y:none}
+    .wrap{max-width:1120px;margin:0 auto;padding:18px 14px 28px}
+    .hero{display:flex;gap:14px;align-items:center;margin:8px 0 18px}
+    .logo{width:64px;height:64px;border-radius:18px;background:linear-gradient(145deg,#e11d48,#9f1239);box-shadow:0 14px 28px rgba(200,16,46,.24);display:grid;place-items:center;color:#fff;font-weight:900;font-size:24px}
+    h1{font-size:34px;line-height:1.05;margin:0;color:#991b1b}
+    .sub{margin:5px 0 0;color:#475569;font-weight:650}
+    .badge{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:8px 13px;background:#dcfce7;color:#14532d;font-weight:850;font-size:13px;margin-top:10px}
+    .panel{background:var(--fsd-card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-top:14px}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .tile{border:0;border-radius:21px;min-height:74px;padding:19px 20px;text-align:left;font-size:17px;font-weight:900;color:#fff;background:linear-gradient(135deg,#e11d48,#991b1b);box-shadow:0 10px 25px rgba(153,27,27,.20);cursor:pointer}
+    .tile.dark{background:linear-gradient(135deg,#374151,#111827)}
+    .tile.green{background:linear-gradient(135deg,#059669,#065f46)}
+    .tile.blue{background:linear-gradient(135deg,#2563eb,#1e40af)}
+    .tile small{display:block;margin-top:5px;font-size:12px;opacity:.86;font-weight:800}
+    .bar{display:none;align-items:center;gap:10px;margin:10px 0}
+    .back{border:0;border-radius:16px;background:#111827;color:#fff;font-weight:900;padding:12px 15px;cursor:pointer}
+    .title{font-weight:950;color:#991b1b}
+    iframe{display:none;width:100%;height:calc(100vh - 118px);border:0;border-radius:20px;background:#fff;box-shadow:var(--shadow)}
+    .setup{border-radius:18px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;padding:14px;margin-top:14px;font-weight:800}
+    .footer{margin-top:12px;color:#64748b;font-size:12px;text-align:center;font-weight:700}
+    @media (max-width:720px){
+      h1{font-size:28px}
+      .grid{grid-template-columns:1fr}
+      .panel{padding:14px}
+      .tile{min-height:70px}
+      iframe{height:calc(100vh - 92px);border-radius:0;box-shadow:none}
+      .wrap.app-open{padding:0;max-width:none}
+      .wrap.app-open .hero,.wrap.app-open .panel,.wrap.app-open .footer{display:none}
+      .wrap.app-open .bar{display:flex;padding:8px 10px;margin:0;background:#fff;position:sticky;top:0;z-index:5;box-shadow:0 8px 20px rgba(15,23,42,.10)}
+      .wrap.app-open iframe{display:block;height:calc(100vh - 58px)}
+    }
+  </style>
+</head>
+<body>
+  <div id="wrap" class="wrap">
+    <div class="hero">
+      <div class="logo">FSD</div>
+      <div>
+        <h1>FSD Schedule 2026</h1>
+        <div class="sub">Engineer scheduling app shell</div>
+        <div class="badge">✅ Clean Rebuild linked app</div>
+      </div>
+    </div>
+
+    <div id="setupWarning" class="setup">
+      Paste your deployed Apps Script Web App URL into <b>SCHEDULE_APP_URL</b> in this GitHub file first.
+    </div>
+
+    <div class="panel">
+      <div class="grid">
+        <button class="tile" onclick="openPage('dashboard')">Schedule Dashboard<small>Today, this week, quick links</small></button>
+        <button class="tile blue" onclick="openPage('weekly')">Weekly Engineer View<small>Mobile/iPad week planner</small></button>
+        <button class="tile green" onclick="openPage('add')">Add Job<small>Fast mobile job entry</small></button>
+        <button class="tile dark" onclick="openSheet()">Open Google Sheet<small>Full spreadsheet access</small></button>
+      </div>
+    </div>
+
+    <div id="bar" class="bar">
+      <button class="back" onclick="showMenu()">← Menu</button>
+      <div id="pageTitle" class="title">Schedule</div>
+    </div>
+
+    <iframe id="appFrame" title="FSD Schedule 2026 app"></iframe>
+
+    <div class="footer">FSD Schedule 2026 shell · v1</div>
+  </div>
+
+  <script>
+    // Replace this after deploying the Apps Script web app.
+    const SCHEDULE_APP_URL = 'PASTE_DEPLOYED_APPS_SCRIPT_WEB_APP_URL_HERE';
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1NH6Lz5vQjiSLdAPJ1hfckQLt5wpZ3-Qy7JD_bGmMSEU/edit';
+
+    const wrap = document.getElementById('wrap');
+    const iframe = document.getElementById('appFrame');
+    const pageTitle = document.getElementById('pageTitle');
+    const setupWarning = document.getElementById('setupWarning');
+
+    function appReady() {
+      return SCHEDULE_APP_URL && SCHEDULE_APP_URL.indexOf('PASTE_') !== 0;
+    }
+
+    function buildUrl(page) {
+      const sep = SCHEDULE_APP_URL.indexOf('?') === -1 ? '?' : '&';
+      return SCHEDULE_APP_URL + sep + 'page=' + encodeURIComponent(page || 'dashboard') + '&shell=github';
+    }
+
+    function openPage(page) {
+      if (!appReady()) {
+        alert('Paste the deployed Apps Script Web App URL into SCHEDULE_APP_URL first.');
+        return false;
+      }
+      const labels = {dashboard:'Schedule Dashboard', weekly:'Weekly Engineer View', add:'Add Job'};
+      pageTitle.textContent = labels[page] || 'Schedule';
+      iframe.src = buildUrl(page);
+      wrap.classList.add('app-open');
+      iframe.style.display = 'block';
+      return false;
+    }
+
+    function showMenu() {
+      wrap.classList.remove('app-open');
+      iframe.style.display = 'none';
+      iframe.src = 'about:blank';
+      return false;
+    }
+
+    function openSheet() {
+      window.open(SHEET_URL, '_blank', 'noopener');
+      return false;
+    }
+
+    window.addEventListener('message', function(event) {
+      const msg = event && event.data ? event.data : null;
+      if (!msg || typeof msg !== 'object') return;
+      if (msg.type === 'FSD_SCHEDULE_NAVIGATE' && msg.page) {
+        openPage(msg.page);
+      }
+    }, false);
+
+    if (appReady()) setupWarning.style.display = 'none';
+  </script>
+</body>
+</html>
