@@ -56,8 +56,8 @@
       <div class="logo">FSD</div>
       <div>
         <h1>FSD Schedule 2026</h1>
-        <div class="sub">Engineer scheduling app shell</div>
-        <div class="badge">✅ Clean Rebuild linked app</div>
+        <div class="sub">Engineer weekly schedule app</div>
+        <div class="badge">✅ Auto opens signed-in engineer schedule</div>
       </div>
     </div>
 
@@ -86,7 +86,7 @@
 
   <script>
     // Replace this after deploying the Apps Script web app.
-    const SCHEDULE_APP_URL = 'https://script.google.com/macros/s/AKfycby2uVTbKcVJ18PW7uhzOav7aI8qzuol6jMPd61RI1XAysK-KFkeIrgz1wrfz91uGqB1Wg/exec';
+    const SCHEDULE_APP_URL = 'PASTE_DEPLOYED_APPS_SCRIPT_WEB_APP_URL_HERE';
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1NH6Lz5vQjiSLdAPJ1hfckQLt5wpZ3-Qy7JD_bGmMSEU/edit';
 
     const wrap = document.getElementById('wrap');
@@ -94,13 +94,19 @@
     const pageTitle = document.getElementById('pageTitle');
     const setupWarning = document.getElementById('setupWarning');
 
+    const params = new URLSearchParams(window.location.search || '');
+    const DEFAULT_ENGINEER = (params.get('engineer') || '').trim();
+    const DEFAULT_PAGE = (params.get('page') || 'weekly').trim() || 'weekly';
+
     function appReady() {
       return SCHEDULE_APP_URL && SCHEDULE_APP_URL.indexOf('PASTE_') !== 0;
     }
 
     function buildUrl(page) {
       const sep = SCHEDULE_APP_URL.indexOf('?') === -1 ? '?' : '&';
-      return SCHEDULE_APP_URL + sep + 'page=' + encodeURIComponent(page || 'dashboard') + '&shell=github';
+      let url = SCHEDULE_APP_URL + sep + 'page=' + encodeURIComponent(page || 'weekly') + '&shell=github';
+      if (DEFAULT_ENGINEER) url += '&engineer=' + encodeURIComponent(DEFAULT_ENGINEER);
+      return url;
     }
 
     function openPage(page) {
@@ -136,7 +142,15 @@
       }
     }, false);
 
-    if (appReady()) setupWarning.style.display = 'none';
+    if (appReady()) {
+      setupWarning.style.display = 'none';
+
+      // C91u: make the signed-in engineer's weekly schedule the main page.
+      // A small delay lets iPad/Safari finish layout before the iframe opens.
+      window.setTimeout(function() {
+        openPage(DEFAULT_PAGE || 'weekly');
+      }, 80);
+    }
   </script>
 </body>
 </html>
