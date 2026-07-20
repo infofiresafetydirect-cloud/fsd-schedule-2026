@@ -81,7 +81,7 @@
 
     <iframe id="appFrame" title="FSD Schedule 2026 app"></iframe>
 
-    <div class="footer">FSD Schedule 2026 shell bridge · C92a</div>
+    <div class="footer">FSD Schedule 2026 shell bridge · C92b</div>
   </div>
 
   <script>
@@ -95,7 +95,7 @@
     const setupWarning = document.getElementById('setupWarning');
 
     const params = new URLSearchParams(window.location.search || '');
-    const DEFAULT_PAGE = (params.get('page') || 'dashboard').trim() || 'dashboard';
+    const DEFAULT_PAGE = (params.get('page') || 'home').trim() || 'home';
 
     function appReady() {
       return SCHEDULE_APP_URL && SCHEDULE_APP_URL.indexOf('PASTE_') !== 0;
@@ -143,13 +143,13 @@
     if (appReady()) {
       setupWarning.style.display = 'none';
 
-      // C92a dashboard first:
+      // C92b home menu first:
       // Do NOT put Apps Script inside a second iframe.
       // When this Schedule GitHub page is already inside the main FSD shell iframe,
       // loading another iframe creates horrible/stuck scrolling on iPad Safari.
       // Replace this page with the Apps Script page directly instead.
       window.setTimeout(function() {
-        window.location.replace(buildUrl(DEFAULT_PAGE || 'dashboard') + '&directSchedule=1');
+        window.location.replace(buildUrl(DEFAULT_PAGE || 'home') + '&directSchedule=1');
       }, 60);
     }
   </script>
