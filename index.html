@@ -56,7 +56,7 @@
       <div class="logo">FSD</div>
       <div>
         <h1>FSD Schedule 2026</h1>
-        <div class="sub">Engineer weekly schedule app</div>
+        <div class="sub">Engineer weekly schedule bridge</div>
         <div class="badge">✅ Auto opens signed-in engineer schedule</div>
       </div>
     </div>
@@ -81,7 +81,7 @@
 
     <iframe id="appFrame" title="FSD Schedule 2026 app"></iframe>
 
-    <div class="footer">FSD Schedule 2026 shell · v1</div>
+    <div class="footer">FSD Schedule 2026 shell bridge · C91w</div>
   </div>
 
   <script>
@@ -145,11 +145,14 @@
     if (appReady()) {
       setupWarning.style.display = 'none';
 
-      // C91u: make the signed-in engineer's weekly schedule the main page.
-      // A small delay lets iPad/Safari finish layout before the iframe opens.
+      // C91w iPad scroll fix:
+      // Do NOT put Apps Script inside a second iframe.
+      // When this Schedule GitHub page is already inside the main FSD shell iframe,
+      // loading another iframe creates horrible/stuck scrolling on iPad Safari.
+      // Replace this page with the Apps Script page directly instead.
       window.setTimeout(function() {
-        openPage(DEFAULT_PAGE || 'weekly');
-      }, 80);
+        window.location.replace(buildUrl(DEFAULT_PAGE || 'weekly') + '&directSchedule=1');
+      }, 60);
     }
   </script>
 </body>
