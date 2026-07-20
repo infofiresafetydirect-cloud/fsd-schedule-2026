@@ -81,7 +81,7 @@
 
     <iframe id="appFrame" title="FSD Schedule 2026 app"></iframe>
 
-    <div class="footer">FSD Schedule 2026 shell bridge · C91w</div>
+    <div class="footer">FSD Schedule 2026 shell bridge · C91x</div>
   </div>
 
   <script>
@@ -95,7 +95,36 @@
     const setupWarning = document.getElementById('setupWarning');
 
     const params = new URLSearchParams(window.location.search || '');
-    const DEFAULT_ENGINEER = (params.get('engineer') || '').trim();
+
+    function scheduleSafeStorageGet(key) {
+      try { return String(localStorage.getItem(key) || '').trim(); } catch (err) { return ''; }
+    }
+
+    function scheduleCookieGet(name) {
+      try {
+        const bits = String(document.cookie || '').split(';');
+        for (let i = 0; i < bits.length; i++) {
+          const p = bits[i].trim();
+          if (p.indexOf(name + '=') === 0) return decodeURIComponent(p.slice(name.length + 1));
+        }
+      } catch (err) {}
+      return '';
+    }
+
+    function getScheduleDefaultEngineer() {
+      return String(
+        params.get('engineer') ||
+        params.get('fsdEngineer') ||
+        params.get('profileEngineer') ||
+        params.get('eng') ||
+        scheduleSafeStorageGet('fsd_certs_default_engineer_v6_3c78z') ||
+        scheduleSafeStorageGet('fsd_certs_default_engineer_v6_3c76a') ||
+        scheduleCookieGet('fsdEngineerProfile') ||
+        ''
+      ).trim();
+    }
+
+    const DEFAULT_ENGINEER = getScheduleDefaultEngineer();
     const DEFAULT_PAGE = (params.get('page') || 'weekly').trim() || 'weekly';
 
     function appReady() {
@@ -145,7 +174,7 @@
     if (appReady()) {
       setupWarning.style.display = 'none';
 
-      // C91w iPad scroll fix:
+      // C91x iPad scroll + engineer fallback:
       // Do NOT put Apps Script inside a second iframe.
       // When this Schedule GitHub page is already inside the main FSD shell iframe,
       // loading another iframe creates horrible/stuck scrolling on iPad Safari.
